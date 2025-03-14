@@ -1,0 +1,20 @@
+{
+  "name": "webview-napi-example",
+  "version": "0.0.0",
+  "main": "js/index.js",
+  "scripts": {
+    "preinstall": "node src/bootstrap.js npm_i",
+    "install": "node src/bootstrap.js build_webview",
+    "example": "node js/index.js"
+  },
+  "author": "Michael Jonker",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "bindings": "^1.5.0",
+    "dotenv": "^16.4.7",
+    "node-addon-api": "^8.3.0",
+    "node-gyp": "^11.0.0",
+    "typescript": "^5.7.3"
+  }
+}
