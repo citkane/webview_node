@@ -5,25 +5,25 @@ ifeq ($(OS), Windows_NT) #################### Windows specific commands
 
 	redirect_stdout = >NUL 2>&1
 define norm_winpath
-	$(eval result := $(subst /,\,${1}))
+	$(eval result := $(subst /,\,${1})); \
 	${result}
 endef
 define mk_dir
-	$(eval path := $(call norm_winpath,${1})); \
-	mkdir path
+	$(eval path := $(call norm_winpath,${1}))
+	mkdir ${path}
 endef
 define rm
-	$(eval path := $(call norm_winpath,${1})); \
-	del /f /q path
+	$(eval path := $(call norm_winpath,${1}))
+	if exist ${path} del /f /q ${path}
 endef
 define cp
-	$(eval src := $(call norm_winpath,${1})); \
-	$(eval targ := $(call norm_winpath,${2})); \
+	$(eval src := $(call norm_winpath,${1}))
+	$(eval targ := $(call norm_winpath,${2}))
 	copy ${src} ${targ}
 endef
 define rm_dir
-	$(eval path := $(call norm_winpath,${1})); \
-	if exist ${path} del /s /f /q ${path}
+	$(eval path := $(call norm_winpath,${1}))
+	if exist ${path} rd /s /q ${path}
 endef
 
 else ######################################## Unix-like specific commands
@@ -47,8 +47,8 @@ endef
 
 endif ####################################### end OS specific commands
 
-.PHONY: swig clean configure build js nuget uninstall npm_i_dev clone
-all: swig configure js nuget
+.PHONY: swig clean configure build js uninstall npm_i_dev clone
+all: swig configure js
 build:
 	npx node-gyp build
 uninstall: clean
@@ -60,11 +60,9 @@ clean:
 	$(call rm,${SWIG_TARGET}); \
 	$(call rm,${COMPILE_COMMDS_TARG})
 swig: clone
-	swig -DSWIG_WEBVIEW_I="${WEBVIEW_DIR}/webview.i" -c++ -javascript -napi -o "${SWIG_TARGET}" "${SRC_DIR}/webview.napi.i";
+	swig -DSWIG_WEBVIEW_I="${WEBVIEW_DIR}/webview.i" -c++ -javascript -napi -o "${SWIG_TARGET}" "${SRC_DIR}/webview.napi.i"
 js:
 	npx tsc
-nuget:
-	node ${NODE_PREINSTALL} ${NUGET_EXE}
 configure: npm_i_dev
 	npx node-gyp configure -- -f gyp.generator.compile_commands_json.py $(redirect_stdout);\
 	$(call cp,${BUILD_DIR}/Release/compile_commands.json,compile_commands.json);\

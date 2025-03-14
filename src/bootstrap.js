@@ -133,7 +133,9 @@ function downloadMsWebView2() {
   if (fs.existsSync(mswv2Dir)) return;
 
   console.info("Downloading Microsoft.Web.WebView2 with nuget.exe...");
-  const command = `${nugetExe} install ${env.MSWV2_TAG} -Version ${env.MSWV2_VERSION} -OutputDirectory ${env.RESOURCE_DIR}`;
+  const command = `cd ${dirname(nugetExe)} && nuget.exe install ${
+    env.MSWV2_TAG
+  } -Version ${env.MSWV2_VERSION} -OutputDirectory ${env.RESOURCE_DIR}`;
   execSync(command);
 }
 
